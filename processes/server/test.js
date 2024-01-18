@@ -17,10 +17,6 @@ function Test({ mongoManager, ReportsManager, TasksManager, CronManager, Sources
 	}
 
 	describe("Проверка бизнес-цепочки", function () {
-		it("********************", async () => {
-			await db("sources").deleteMany()
-		})
-
 		it("Создать ресурс", async () => {
 			const response = await (
 				await fetch(`${url}/api/createSource`, {
@@ -143,10 +139,6 @@ function Test({ mongoManager, ReportsManager, TasksManager, CronManager, Sources
 			it("Проверить отсутствие работы", () => {
 				expect(Object.keys(cronManager.jobs).length).to.equal(0)
 			})
-		})
-
-		it("********************", async () => {
-			await db("sources").deleteMany()
 		})
 	})
 }
