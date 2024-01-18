@@ -13,17 +13,16 @@ export default function ({ tasksManager }) {
 					_id: string(/.{1,100}/),
 					name: string(/.{1,100}/),
 					status: string(/.{1,100}/),
-					created: number(/.{1,100}/),
-					type: string(/.{1,100}/),
-					link: string(/.{1,100}/),
-					result: number(/.{1,100}/).optional()
+					created: number(/.{1,100}/)
 				})
 			)
 		}),
 
 		controller: async function ({ body, auth, req, res }) {
-			const tasks = await tasksManager.getTasks()
-			console.log(tasks)
+			const tasks = (await tasksManager.getTasks()).map((task) => {
+				const { _id, name, status, created } = task
+				return { _id: _id.toString(), name, status, created }
+			})
 			return { tasks }
 		}
 	}

@@ -5,41 +5,32 @@ export default Test
 function Test({ SourcesManager, db }) {
 	const sourcesManager = new SourcesManager({ db })
 
-	it("Получить ресурсы", async () => {
-		it("Получить все", async () => {
-			const sources = await sourcesManager.getSources()
-			expect(sources).to.be.an("array")
-		})
-		it("Получить по имени", async () => {
-			const _id = await sourcesManager.createSource({ name: "testSource" })
-			const sources = await sourcesManager.getSources({ name: "testSource" })
-			expect(sources).to.be.an("array")
-			expect(sources.length).to.equal(1)
-			await sourcesManager.deleteSource(_id)
-		})
+	it("Получить все ресурсы", async () => {
+		const sources = await sourcesManager.getSources()
+		expect(sources).to.be.an("array")
 	})
 
 	it("Создать ресурс", async () => {
-		const _id = await sourcesManager.createSource({ name: "testSource" })
-		const sources = await sourcesManager.getSources({ _id })
+		const id = await sourcesManager.createSource({ name: "testSource" })
+		const sources = (await sourcesManager.getSources()).filter(({ _id }) => _id === id)
 		expect(sources.length).to.equal(1)
 		expect(sources[0].name).to.equal("testSource")
-		await sourcesManager.deleteSource(_id)
+		await sourcesManager.deleteSource(id)
 	})
 
 	it("Редактировать ресурс", async () => {
-		const _id = await sourcesManager.createSource({ name: "testSourceeeeeeeee" })
-		await sourcesManager.updateSource(_id, { name: "testSource" })
-		const sources = await sourcesManager.getSources({ _id })
+		const id = await sourcesManager.createSource({ name: "testSourceeeeeeeee" })
+		await sourcesManager.updateSource(id, { name: "testSource" })
+		const sources = (await sourcesManager.getSources()).filter(({ _id }) => _id === id)
 		expect(sources.length).to.equal(1)
 		expect(sources[0].name).to.equal("testSource")
-		await sourcesManager.deleteSource(_id)
+		await sourcesManager.deleteSource(id)
 	})
 
 	it("Удалить ресурс", async () => {
-		const _id = await sourcesManager.createSource({ name: "testSource" })
-		await sourcesManager.deleteSource(_id)
-		const sources = await sourcesManager.getSources({ _id })
+		const id = await sourcesManager.createSource({ name: "testSource" })
+		await sourcesManager.deleteSource(id)
+		const sources = (await sourcesManager.getSources()).filter(({ _id }) => _id === id)
 		expect(sources.length).to.equal(0)
 	})
 }

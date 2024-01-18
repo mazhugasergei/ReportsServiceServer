@@ -1,6 +1,7 @@
 export default {
 	run: async ({ reportsManager, task }) => {
-		await reportsManager.createReport(task.link)
+		const { name, link } = task
+		await reportsManager.createReport({ name, link })
 		return { result: 100 }
 	}
 }

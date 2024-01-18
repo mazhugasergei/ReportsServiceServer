@@ -1,10 +1,12 @@
 import puppeteer from "puppeteer"
+import { v1 as uuidv1 } from "uuid"
 
-export default function Manager({ mongoManager }) {
+export default function Manager({ mongoManager, db }) {
 	this.createReport = createReport
 	this.getReport = getReport
+	this.getReports = getReports
 
-	async function createReport(link) {
+	async function createReport({ name, sourceId, taskId, link }) {
 		const browser = await puppeteer.launch({ headless: "new", executablePath: puppeteer.executablePath() })
 		const page = await browser.newPage()
 		page.setViewport({ width: 1600, height: 900 })
@@ -17,17 +19,27 @@ export default function Manager({ mongoManager }) {
 		await page.goto(link, { waitUntil: "networkidle0", timeout: 60000 })
 		const imageBuffer = await page.screenshot({ type: "jpeg" })
 		await browser.close()
-		const filename = await mongoManager.gfs.insertFile({
+		const fileId = await mongoManager.gfs.insertFile({
 			blob: new Blob([imageBuffer], { type: "image/jpeg" }),
 			metadata: { isMeta: true },
 			created: Date.now()
 		})
-		return filename
+		await db("reports").insertOne({
+			_id: uuidv1(),
+			name,
+			sourceId,
+			taskId,
+			file: fileId,
+			created: Date.now()
+		})
+		return fileId
 	}
 
-	async function getReport(filename) {
-		return await mongoManager.gfs.getFile({ filename })
-		// return await mongoManager.gfs.getFile({ name })
-		// .sort({ created: -1 }).toArray())[0]
+	async function getReport(name) {
+		return (await db("reports").find({ name }).sort({ created: -1 }).toArray())[0]
+	}
+
+	async function getReports() {
+		return (await db("reports").find().sort({ created: -1 })).toArray()
 	}
 }

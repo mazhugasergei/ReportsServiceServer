@@ -17,8 +17,8 @@ export default function ({ cronManager, sourcesManager }) {
 
 		controller: async function ({ body, auth, req, res }) {
 			const _id = await sourcesManager.createSource(body)
-			await cronManager.addJob({ _id, ...body })
-			return { _id }
+			await cronManager.addJob({ sourceId: _id, ...body })
+			return { _id: _id.toString() }
 		}
 	}
 }

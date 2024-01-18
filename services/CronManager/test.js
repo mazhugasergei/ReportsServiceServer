@@ -8,24 +8,30 @@ function Test({ mongoManager, ReportsManager, TasksManager, CronManager, db }) {
 	const tasksManager = new TasksManager({ reportsManager, db })
 	const cronManager = new CronManager({ tasksManager })
 
+	// it("", async () => {
+	// 	await db("sources").deleteMany()
+	// 	await db("tasks").deleteMany()
+	// 	await db("reports").deleteMany()
+	// })
+
 	it("Создать работу", () => {
 		const _id = uuidv1()
-		cronManager.addJob({ _id, name: "test", link: "https://example.com", cron: "*/15 * * * *" })
+		cronManager.addJob({ sourceId: _id, name: "test", cron: "*/30 * * * *" })
 		expect(cronManager.jobs).to.have.key(_id)
 		cronManager.deleteJob(_id)
 	})
 
 	it("Редактировать работу", () => {
 		const _id = uuidv1()
-		cronManager.addJob({ _id, name: "test", link: "https://google.com", cron: "*/15 * * * *" })
-		cronManager.updateJob(_id, { name: "testtt", link: "https://example.com", cron: "*/30 * * * *" })
+		cronManager.addJob({ sourceId: _id, name: "test", cron: "*/30 * * * *" })
+		cronManager.updateJob(_id, { name: "testtt", cron: "*/45 * * * *" })
 		expect(Object.keys(cronManager.jobs).length).to.equal(1)
 		cronManager.deleteJob(_id)
 	})
 
 	it("Удалить работу", () => {
 		const _id = uuidv1()
-		cronManager.addJob({ _id, name: "test", link: "https://example.com", cron: "*/15 * * * *" })
+		cronManager.addJob({ sourceId: _id, name: "test", cron: "*/30 * * * *" })
 		cronManager.deleteJob(_id)
 		expect(cronManager.jobs).not.have.key(_id)
 	})

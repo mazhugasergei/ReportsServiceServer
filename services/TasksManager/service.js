@@ -25,17 +25,18 @@ export default function Manager({ reportsManager, db }) {
 		}, {})
 	}
 
-	async function getTasks(searchParams) {
-		return db("tasks").find(searchParams).sort({ created: -1 }).toArray()
+	async function getTasks() {
+		return db("tasks").find().sort({ created: -1 }).toArray()
 	}
 
-	async function addTask({ name, type, link }) {
+	async function addTask({ name, sourceId, type, link }) {
 		const _id = uuidv1()
 		await db("tasks").insertOne({
 			_id,
 			name,
 			status: "waiting",
 			created: Date.now(),
+			sourceId,
 			type,
 			link
 		})
@@ -65,11 +66,12 @@ export default function Manager({ reportsManager, db }) {
 					}
 				)
 			} catch (e) {
+				console.log(e)
 				await updateTask(
 					{ _id: task._id },
 					{
 						status: "errored",
-						result: e
+						result: 0
 					}
 				)
 			}

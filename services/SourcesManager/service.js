@@ -6,8 +6,8 @@ export default function Manager({ db }) {
 	this.updateSource = updateSource
 	this.deleteSource = deleteSource
 
-	async function getSources(searchParams) {
-		return await db("sources").find(searchParams).sort({ created: -1 }).toArray()
+	async function getSources() {
+		return await db("sources").find().sort({ created: -1 }).toArray()
 	}
 
 	async function createSource({ name, cron, link }) {

@@ -3,7 +3,7 @@ import { expect } from "chai"
 export default Test
 
 function Test({ mongoManager, ReportsManager, TasksManager, db }) {
-	const reportsManager = new ReportsManager({ mongoManager })
+	const reportsManager = new ReportsManager({ mongoManager, db })
 	const tasksManager = new TasksManager({ reportsManager, db })
 
 	it("Получить таски", async () => {
@@ -18,7 +18,7 @@ function Test({ mongoManager, ReportsManager, TasksManager, db }) {
 
 	it("Добавить таск", async () => {
 		const _id = await tasksManager.addTask({ name: "someName", type: "someTask" })
-		const tasks = await tasksManager.getTasks({ _id })
+		const tasks = await tasksManager.getTasks()
 		expect(tasks.length).to.equal(1)
 		expect(tasks[0].name).to.equal("someName")
 		expect(tasks[0].status).to.equal("waiting")
@@ -29,7 +29,7 @@ function Test({ mongoManager, ReportsManager, TasksManager, db }) {
 	it("Редактировать таск", async () => {
 		const _id = await tasksManager.addTask({ type: "someTaskkkkkkkkkk" })
 		await tasksManager.updateTask({ _id }, { type: "someTask" })
-		const tasks = await tasksManager.getTasks({ _id })
+		const tasks = await tasksManager.getTasks()
 		expect(tasks.length).to.equal(1)
 		expect(tasks[0].status).to.equal("waiting")
 		expect(tasks[0].type).to.equal("someTask")
@@ -39,14 +39,14 @@ function Test({ mongoManager, ReportsManager, TasksManager, db }) {
 	it("Удалить таск", async () => {
 		const _id = await tasksManager.addTask({ type: "someTask" })
 		await tasksManager.deleteTask({ _id })
-		const tasks = await tasksManager.getTasks({ _id })
+		const tasks = await tasksManager.getTasks()
 		expect(tasks.length).to.equal(0)
 	})
 
 	it("Выполнение тасков. [Ошибка]", async () => {
 		const _id = await tasksManager.addTask({ type: "nonexistentTask" })
 		await tasksManager.execActiveTasks()
-		const tasks = await tasksManager.getTasks({ _id })
+		const tasks = await tasksManager.getTasks()
 		expect(tasks.length).to.equal(1)
 		expect(tasks[0].status).to.equal("errored")
 		await tasksManager.deleteTask({ _id })
@@ -57,7 +57,7 @@ function Test({ mongoManager, ReportsManager, TasksManager, db }) {
 			this.timeout(60000)
 			const _id = await tasksManager.addTask({ type: "createReport", link: "https://example.com" })
 			await tasksManager.execActiveTasks()
-			const tasks = await tasksManager.getTasks({ _id })
+			const tasks = await tasksManager.getTasks()
 			expect(tasks.length).to.equal(1)
 			expect(tasks[0].status).to.equal("success")
 			expect(tasks[0].result).to.equal(100)

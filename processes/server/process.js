@@ -13,19 +13,21 @@ export default horizen.init(async function (props, options) {
 	const tasksManager = new localServices.TasksManager({ reportsManager, ...props })
 	const cronManager = new localServices.CronManager({ tasksManager, ...props })
 
-	daemonsManager.addDaemon({ name: "execActiveTasks", daemon: tasksManager.execActiveTasks })
+	// daemonsManager.addDaemon({ name: "execActiveTasks", daemon: tasksManager.execActiveTasks })
 
 	return {
 		port: config.horizen.ports.server,
 
 		controllers: {
-			get: [],
+			get: [controllers.GetReports({ reportsManager, ...deps })],
 			post: [
 				controllers.GetSources({ sourcesManager, ...deps }),
 				controllers.CreateSource({ cronManager, sourcesManager, ...deps }),
 				controllers.UpdateSource({ cronManager, sourcesManager, ...deps }),
 				controllers.DeleteSource({ cronManager, sourcesManager, ...deps }),
-				controllers.GetTasks({ tasksManager, ...deps })
+				controllers.GetTasks({ tasksManager, ...deps }),
+				controllers.RebuildTask({ tasksManager, ...deps }),
+				controllers.GetReport({ reportsManager, ...deps })
 			]
 		}
 	}

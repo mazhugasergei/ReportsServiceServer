@@ -5,9 +5,7 @@ export default function ({ sourcesManager }) {
 		description: "",
 		errors: {},
 
-		reqSchema: ({ string, object, array, number, any }, {}) => ({
-			name: string(/.{1,100}/).optional()
-		}),
+		reqSchema: ({ string, object, array, number, any }, {}) => ({}),
 
 		resSchema: ({ string, object, array, number, any }, {}) => ({
 			sources: array(
@@ -22,7 +20,10 @@ export default function ({ sourcesManager }) {
 		}),
 
 		controller: async function ({ body, auth, req, res }) {
-			const sources = await sourcesManager.getSources(body)
+			const sources = (await sourcesManager.getSources()).map((source) => {
+				const { _id, ...props } = source
+				return { _id: _id.toString(), ...props }
+			})
 			return { sources }
 		}
 	}
