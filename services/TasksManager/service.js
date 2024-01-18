@@ -29,7 +29,7 @@ export default function Manager({ reportsManager, db }) {
 		return db("tasks").find().sort({ created: -1 }).toArray()
 	}
 
-	async function addTask({ name, sourceId, type, link }) {
+	async function addTask({ name, sourceId, type, link, meta = {} }) {
 		const _id = uuidv1()
 		await db("tasks").insertOne({
 			_id,
@@ -38,7 +38,8 @@ export default function Manager({ reportsManager, db }) {
 			created: Date.now(),
 			sourceId,
 			type,
-			link
+			link,
+			meta
 		})
 		return _id
 	}
