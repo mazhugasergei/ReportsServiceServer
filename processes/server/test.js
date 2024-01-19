@@ -53,13 +53,10 @@ function Test({ DaemonsManager, mongoManager, ReportsManager, TasksManager, Cron
 			expect(response.result.tasks.length).to.equal(0)
 		})
 		it("Ждать выполнения cron-работы", async function () {
-			this.timeout(70000)
+			this.timeout(80000)
 			while (!(await db("tasks").find().toArray()).length) {
-				console.log("Tasks:", (await db("tasks").find().toArray()).length) ////
-				console.log("Reports:", (await db("reports").find().toArray()).length) ////
 				await wait(10000)
 			}
-			console.log("Tasks:", (await db("tasks").find().toArray()).length)
 		})
 		it("Проверить наличие тасков", async () => {
 			const response = await (

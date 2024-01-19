@@ -38,7 +38,7 @@ function MongoManager({config}){
                 });
 
                 stream.on('end', () => {
-                    resolve(new Blob([buffer], {type: file.contentType}));
+                    resolve(new Blob([Buffer.concat(buffer)], {type: file.contentType}));
                 });
 
                 stream.on('error', reject);

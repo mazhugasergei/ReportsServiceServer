@@ -13,13 +13,11 @@ function Test({ mongoManager, ReportsManager, db }) {
 
 	it("Получить отчёт", async () => {
 		const file = await reportsManager.getReport("testReport")
-		console.log(file) ////
 		expect(file.name).to.equal("testReport")
 	})
 
 	it("Получить отчёты", async () => {
 		const files = await reportsManager.getReports()
-		console.log(files) ////
 		expect(files).to.be.an("array")
 		expect(files.length).to.equal(1)
 		expect(files[0].name).to.be.a("string")
