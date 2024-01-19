@@ -8,20 +8,20 @@ function Test({ mongoManager, ReportsManager, TasksManager, CronManager, db }) {
 	const tasksManager = new TasksManager({ reportsManager, db })
 	const cronManager = new CronManager({ tasksManager })
 
-	it("************************", async () => {
-		await db("sources").deleteMany({ name: "testName" })
-		await db("tasks").deleteMany({ name: "testName" })
-		await db("reports").deleteMany({ name: "testName" })
-	})
+	// it("************************", async () => {
+	// 	await db("sources").deleteMany()
+	// 	await db("tasks").deleteMany()
+	// 	await db("reports").deleteMany()
+	// })
 
-	it("Создать работу", () => {
+	it("Создать работу", async () => {
 		const _id = uuidv1()
 		cronManager.addJob({ sourceId: _id, name: "testName", cron: "*/30 * * * *" })
 		expect(cronManager.jobs).to.have.key(_id)
 		cronManager.deleteJob(_id)
 	})
 
-	it("Редактировать работу", () => {
+	it("Редактировать работу", async () => {
 		const _id = uuidv1()
 		cronManager.addJob({ sourceId: _id, name: "testName", cron: "*/30 * * * *" })
 		cronManager.updateJob(_id, { name: "testtt", cron: "*/45 * * * *" })
@@ -29,10 +29,11 @@ function Test({ mongoManager, ReportsManager, TasksManager, CronManager, db }) {
 		cronManager.deleteJob(_id)
 	})
 
-	it("Удалить работу", () => {
+	it("Удалить работу", async () => {
 		const _id = uuidv1()
 		cronManager.addJob({ sourceId: _id, name: "testName", cron: "*/30 * * * *" })
 		cronManager.deleteJob(_id)
 		expect(cronManager.jobs).not.have.key(_id)
+		expect(Object.keys(cronManager.jobs).length).to.equal(0)
 	})
 }

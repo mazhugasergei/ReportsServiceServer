@@ -58,22 +58,10 @@ export default function Manager({ reportsManager, db }) {
 
 		for (let task of tasks) {
 			try {
-				const { result, inProgress } = await providers[task.type].run({ ...scope, task })
-				await updateTask(
-					{ _id: task._id },
-					{
-						status: inProgress ? "waiting" : "success",
-						result: result
-					}
-				)
+				const { filename } = await providers[task.type].run({ ...scope, task })
+				await updateTask({ _id: task._id }, { status: "success", filename })
 			} catch (e) {
-				await updateTask(
-					{ _id: task._id },
-					{
-						status: "errored",
-						result: 0
-					}
-				)
+				await updateTask({ _id: task._id }, { status: "errored" })
 			}
 		}
 	}

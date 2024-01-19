@@ -18,11 +18,11 @@ function Test({ DaemonsManager, mongoManager, ReportsManager, TasksManager, Cron
 	}
 
 	describe("Проверка бизнес-цепочки", function () {
-		it("************************", async () => {
+		it("Добавить демон", async () => {
 			daemonsManager.addDaemon({ name: "execActiveTasks", daemon: tasksManager.execActiveTasks })
-			await db("sources").deleteMany({ name: "testName" })
-			await db("tasks").deleteMany({ name: "testName" })
-			await db("reports").deleteMany({ name: "testName" })
+			// await db("sources").deleteMany({ name: "testName" })
+			// await db("tasks").deleteMany({ name: "testName" })
+			// await db("reports").deleteMany({ name: "testName" })
 		})
 
 		it("Создать ресурс", async () => {
@@ -52,12 +52,12 @@ function Test({ DaemonsManager, mongoManager, ReportsManager, TasksManager, Cron
 			expect(response.result.tasks).to.be.an("array")
 			expect(response.result.tasks.length).to.equal(0)
 		})
+
 		it("Ждать выполнения cron-работы", async function () {
 			this.timeout(80000)
-			while (!(await db("tasks").find().toArray()).length) {
-				await wait(10000)
-			}
+			while (!(await db("tasks").find().toArray()).length) await wait(1000)
 		})
+
 		it("Проверить наличие тасков", async () => {
 			const response = await (
 				await fetch(`${url}/api/getTasks`, {
@@ -66,7 +66,7 @@ function Test({ DaemonsManager, mongoManager, ReportsManager, TasksManager, Cron
 				})
 			).json()
 			expect(response.result.tasks).to.be.an("array")
-			expect(response.result.tasks.length).to.be.greaterThan(0)
+			expect(response.result.tasks.length).to.equal(1)
 		})
 
 		it("Найти все ресурсы", async () => {
@@ -78,6 +78,34 @@ function Test({ DaemonsManager, mongoManager, ReportsManager, TasksManager, Cron
 			).json()
 			expect(response.result.sources).to.be.an("array")
 			expect(response.result.sources.length).to.equal(1)
+		})
+
+		it("Проверить поиск отчётов", async function () {
+			this.timeout(30000)
+			while (!(await db("reports").find().toArray()).length) wait(1000)
+			const response = await (
+				await fetch(`${url}/api/getReports`, {
+					method: "GET",
+					headers: { "Content-Type": "application/json" }
+				})
+			).json()
+			expect(response.result.reports).to.be.an("array")
+			expect(response.result.reports.length).to.be.greaterThan(0)
+			expect(response.result.reports[0].file).to.be.a("string")
+		})
+
+		it("Проверить поиск отчёта", async function () {
+			const response = await (
+				await fetch(`${url}/api/getReport`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						name: "testName"
+					})
+				})
+			).json()
+			expect(response.result).to.be.an("object")
+			expect(response.result.file).to.be.a("string")
 		})
 
 		it("Редактировать ресурс", async () => {
@@ -141,39 +169,10 @@ function Test({ DaemonsManager, mongoManager, ReportsManager, TasksManager, Cron
 			})
 		})
 
-		it("Проверить поиск отчётов", async function () {
-			this.timeout(20000)
-			while (!(await db("reports").find().toArray()).length) {
-				wait(5000)
-			}
-			const response = await (
-				await fetch(`${url}/api/getReports`, {
-					method: "GET",
-					headers: { "Content-Type": "application/json" }
-				})
-			).json()
-			expect(response.result.reports).to.be.an("array")
-			expect(response.result.reports.length).to.be.greaterThan(0)
-			expect(response.result.reports[0].file).to.be.a("string")
-		})
-		it("Проверить поиск отчёта", async function () {
-			const response = await (
-				await fetch(`${url}/api/getReport`, {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						name: "testName"
-					})
-				})
-			).json()
-			expect(response.result).to.be.an("object")
-			expect(response.result.file).to.be.a("string")
-		})
-
-		it("************************", async () => {
-			await db("sources").deleteMany({ name: "testName" })
-			await db("tasks").deleteMany({ name: "testName" })
-			await db("reports").deleteMany({ name: "testName" })
-		})
+		// it("************************", async () => {
+		// 	await db("sources").deleteMany({ name: "testName" })
+		// 	await db("tasks").deleteMany({ name: "testName" })
+		// 	await db("reports").deleteMany({ name: "testName" })
+		// })
 	})
 }

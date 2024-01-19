@@ -14,6 +14,7 @@ export default function ({ tasksManager }) {
 					name: string(/.{1,100}/),
 					status: string(/.{1,100}/),
 					link: string(/.{1,80000}/),
+					filename: any(),
 					created: number(/.{1,100}/)
 				})
 			)
@@ -21,8 +22,8 @@ export default function ({ tasksManager }) {
 
 		controller: async function ({ body, auth, req, res }) {
 			const tasks = (await tasksManager.getTasks()).map((task) => {
-				const { _id, name, status, link, created } = task
-				return { _id: _id.toString(), name, status, link, created }
+				const { _id, name, status, link, created, filename } = task
+				return { _id: _id.toString(), name, status, link, created, filename }
 			})
 			return { tasks }
 		}

@@ -17,10 +17,10 @@ function Test({ mongoManager, ReportsManager, TasksManager, db }) {
 	})
 
 	it("Добавить таск", async () => {
-		const _id = await tasksManager.addTask({ name: "someName", type: "someTask", link: "https://example.com" })
+		const _id = await tasksManager.addTask({ name: "testName", type: "someTask", link: "https://example.com" })
 		const tasks = await tasksManager.getTasks()
 		expect(tasks.length).to.equal(1)
-		expect(tasks[0].name).to.equal("someName")
+		expect(tasks[0].name).to.equal("testName")
 		expect(tasks[0].status).to.equal("waiting")
 		expect(tasks[0].type).to.equal("someTask")
 		expect(tasks[0].link).to.equal("https://example.com")
@@ -28,17 +28,17 @@ function Test({ mongoManager, ReportsManager, TasksManager, db }) {
 	})
 
 	it("Редактировать таск", async () => {
-		const _id = await tasksManager.addTask({ type: "someTaskkkkkkkkkk" })
-		await tasksManager.updateTask({ _id }, { type: "someTask" })
+		const _id = await tasksManager.addTask({ name: "testNameeeeeeeee" })
+		await tasksManager.updateTask({ _id }, { name: "testName" })
 		const tasks = await tasksManager.getTasks()
 		expect(tasks.length).to.equal(1)
 		expect(tasks[0].status).to.equal("waiting")
-		expect(tasks[0].type).to.equal("someTask")
+		expect(tasks[0].name).to.equal("testName")
 		await tasksManager.deleteTask({ _id })
 	})
 
 	it("Удалить таск", async () => {
-		const _id = await tasksManager.addTask({ type: "someTask" })
+		const _id = await tasksManager.addTask({ type: "testName" })
 		await tasksManager.deleteTask({ _id })
 		const tasks = await tasksManager.getTasks()
 		expect(tasks.length).to.equal(0)
@@ -56,17 +56,14 @@ function Test({ mongoManager, ReportsManager, TasksManager, db }) {
 	describe("Провайдер CreateReport", () => {
 		it("Получить отчёт", async function () {
 			this.timeout(60000)
-			const _id = await tasksManager.addTask({ type: "createReport", link: "https://example.com" })
+			const _id = await tasksManager.addTask({ name: "testName", type: "createReport", link: "https://example.com" })
 			await tasksManager.execActiveTasks()
 			const tasks = await tasksManager.getTasks()
 			expect(tasks.length).to.equal(1)
 			expect(tasks[0].status).to.equal("success")
-			expect(tasks[0].result).to.equal(100)
+			expect(tasks[0].filename).to.be.a("string")
 			await tasksManager.deleteTask({ _id })
+			await db("reports").deleteOne({ name: "testName" })
 		})
-	})
-
-	it("Удалить все тест-таски", async () => {
-		await db("tasks").deleteMany()
 	})
 }

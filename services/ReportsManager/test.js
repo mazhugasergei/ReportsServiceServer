@@ -21,6 +21,6 @@ function Test({ mongoManager, ReportsManager, db }) {
 		expect(files).to.be.an("array")
 		expect(files.length).to.equal(1)
 		expect(files[0].name).to.be.a("string")
-		await db("reports").deleteMany({ name: "testName" })
+		await db("reports").deleteOne({ name: "testName" })
 	})
 }
