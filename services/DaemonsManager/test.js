@@ -8,7 +8,7 @@ function Test({ DaemonsManager }) {
 	it(`Базовая проверка работоспособности`, async () => {
 		let test = 0
 		const id = await daemonsManager.addDaemon({
-			name: "test",
+			name: "testName",
 			daemon: () => (test += 1),
 			upTime: 500
 		})

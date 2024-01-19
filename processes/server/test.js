@@ -18,12 +18,12 @@ function Test({ DaemonsManager, mongoManager, ReportsManager, TasksManager, Cron
 	}
 
 	describe("Проверка бизнес-цепочки", function () {
-		// it("", async () => {
-		// 	daemonsManager.addDaemon({ name: "execActiveTasks", daemon: tasksManager.execActiveTasks })
-		// 	await db("sources").deleteMany()
-		// 	await db("tasks").deleteMany()
-		// 	await db("reports").deleteMany()
-		// })
+		it("************************", async () => {
+			daemonsManager.addDaemon({ name: "execActiveTasks", daemon: tasksManager.execActiveTasks })
+			await db("sources").deleteMany({ name: "testName" })
+			await db("tasks").deleteMany({ name: "testName" })
+			await db("reports").deleteMany({ name: "testName" })
+		})
 
 		it("Создать ресурс", async () => {
 			const response = await (
@@ -170,10 +170,10 @@ function Test({ DaemonsManager, mongoManager, ReportsManager, TasksManager, Cron
 			expect(response.result.file).to.be.a("string")
 		})
 
-		// it("", async () => {
-		// 	await db("sources").deleteMany()
-		// 	await db("tasks").deleteMany()
-		// 	await db("reports").deleteMany()
-		// })
+		it("************************", async () => {
+			await db("sources").deleteMany({ name: "testName" })
+			await db("tasks").deleteMany({ name: "testName" })
+			await db("reports").deleteMany({ name: "testName" })
+		})
 	})
 }

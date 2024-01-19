@@ -67,7 +67,6 @@ export default function Manager({ reportsManager, db }) {
 					}
 				)
 			} catch (e) {
-				console.log(e)
 				await updateTask(
 					{ _id: task._id },
 					{

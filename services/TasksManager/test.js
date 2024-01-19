@@ -17,12 +17,13 @@ function Test({ mongoManager, ReportsManager, TasksManager, db }) {
 	})
 
 	it("Добавить таск", async () => {
-		const _id = await tasksManager.addTask({ name: "someName", type: "someTask" })
+		const _id = await tasksManager.addTask({ name: "someName", type: "someTask", link: "https://example.com" })
 		const tasks = await tasksManager.getTasks()
 		expect(tasks.length).to.equal(1)
 		expect(tasks[0].name).to.equal("someName")
 		expect(tasks[0].status).to.equal("waiting")
 		expect(tasks[0].type).to.equal("someTask")
+		expect(tasks[0].link).to.equal("https://example.com")
 		await tasksManager.deleteTask({ _id })
 	})
 
