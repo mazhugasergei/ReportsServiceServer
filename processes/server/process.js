@@ -1,5 +1,6 @@
 import Horizen from "horizen-framework/backend"
 import config from "../../config.json" assert { type: "json" }
+import cron from "node-cron"
 
 const horizen = new Horizen(config.horizen)
 
@@ -14,6 +15,10 @@ export default horizen.init(async function (props, options) {
 	const cronManager = new localServices.CronManager({ tasksManager, ...props })
 
 	// daemonsManager.addDaemon({ name: "execActiveTasks", daemon: tasksManager.execActiveTasks })
+
+	// cron.schedule("59 23 * * *", () => {
+	// 	process.exit(-1)
+	// })
 
 	return {
 		port: config.horizen.ports.server,

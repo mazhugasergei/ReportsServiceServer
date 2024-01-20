@@ -57,7 +57,11 @@ export default function Manager({ reportsManager, db }) {
 
 		for (let task of tasks) {
 			try {
+				const timerId = setTimeout(() => {
+					throw new Error("1 minute passed and try block is not resolved")
+				}, 60000)
 				const { fileId } = await providers[task.type].run({ ...scope, task })
+				clearTimeout(timerId)
 				await updateTask(task._id, { status: "success", fileId })
 			} catch (e) {
 				await updateTask(task._id, { status: "errored" })

@@ -6,7 +6,7 @@ export default function Manager({ mongoManager, db }) {
 	this.getReport = getReport
 	this.getReports = getReports
 
-	async function createReport({ name, sourceId, taskId, link }) {
+	async function createReport({ name, sourceId, taskId, link, created }) {
 		const browser = await puppeteer.launch({ headless: "new", executablePath: puppeteer.executablePath() })
 		const page = await browser.newPage()
 		page.setViewport({ width: 1600, height: 900 })
@@ -30,7 +30,7 @@ export default function Manager({ mongoManager, db }) {
 			sourceId,
 			taskId,
 			fileId,
-			created: Date.now()
+			created
 		})
 		return fileId
 	}
