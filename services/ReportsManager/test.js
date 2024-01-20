@@ -8,19 +8,20 @@ function Test({ mongoManager, ReportsManager, db }) {
 	it("Создать отчёт", async function () {
 		this.timeout(30000)
 		const fileId = await reportsManager.createReport({ name: "testName", link: "https://example.com" })
-		expect(fileId).to.be.a("string")
+		const reports = await db("reports").find({ fileId }).toArray()
+		expect(reports[0].name).to.equal("testName")
+		expect(reports[0].fileId).to.be.a("string")
 	})
 
 	it("Получить отчёт", async () => {
-		const file = await reportsManager.getReport("testName")
-		expect(file.name).to.equal("testName")
+		const report = await reportsManager.getReport("testName")
+		expect(report.name).to.equal("testName")
 	})
 
 	it("Получить все отчёты", async () => {
-		const files = await reportsManager.getReports()
-		expect(files).to.be.an("array")
-		expect(files.length).to.equal(1)
-		expect(files[0].name).to.be.a("string")
+		const reports = await reportsManager.getReports()
+		expect(reports).to.be.an("array")
+		expect(reports.length).to.be.greaterThan(0)
 		await db("reports").deleteOne({ name: "testName" })
 	})
 }

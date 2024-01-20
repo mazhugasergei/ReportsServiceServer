@@ -29,7 +29,7 @@ export default function Manager({ mongoManager, db }) {
 			name,
 			sourceId,
 			taskId,
-			file: fileId,
+			fileId,
 			created: Date.now()
 		})
 		return fileId

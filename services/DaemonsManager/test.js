@@ -5,6 +5,12 @@ export default Test
 function Test({ DaemonsManager }) {
 	const daemonsManager = new DaemonsManager()
 
+	function wait(time) {
+		return new Promise((resolve) => {
+			setTimeout(resolve, time)
+		})
+	}
+
 	it(`Базовая проверка работоспособности`, async () => {
 		let test = 0
 		const id = await daemonsManager.addDaemon({
@@ -22,11 +28,5 @@ function Test({ DaemonsManager }) {
 		await wait(600)
 
 		expect(test).to.be.equal(2)
-	})
-}
-
-function wait(time) {
-	return new Promise((resolve) => {
-		setTimeout(resolve, time)
 	})
 }

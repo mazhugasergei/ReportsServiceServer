@@ -29,14 +29,13 @@ export default function Manager({ reportsManager, db }) {
 		return db("tasks").find().sort({ created: -1 }).toArray()
 	}
 
-	async function addTask({ name, sourceId, type, link, meta = {} }) {
+	async function addTask({ name, type, link, meta = {} }) {
 		const _id = uuidv1()
 		await db("tasks").insertOne({
 			_id,
 			name,
 			status: "waiting",
 			created: Date.now(),
-			sourceId,
 			type,
 			link,
 			meta
@@ -44,12 +43,12 @@ export default function Manager({ reportsManager, db }) {
 		return _id
 	}
 
-	async function updateTask(searchParams, fields) {
-		await db("tasks").updateOne(searchParams, { $set: fields })
+	async function updateTask(_id, fields) {
+		await db("tasks").updateOne({ _id }, { $set: fields })
 	}
 
-	async function deleteTask(searchParams) {
-		await db("tasks").deleteOne(searchParams)
+	async function deleteTask(_id) {
+		await db("tasks").deleteOne({ _id })
 	}
 
 	async function execActiveTasks() {
@@ -58,10 +57,10 @@ export default function Manager({ reportsManager, db }) {
 
 		for (let task of tasks) {
 			try {
-				const { filename } = await providers[task.type].run({ ...scope, task })
-				await updateTask({ _id: task._id }, { status: "success", filename })
+				const { fileId } = await providers[task.type].run({ ...scope, task })
+				await updateTask(task._id, { status: "success", fileId })
 			} catch (e) {
-				await updateTask({ _id: task._id }, { status: "errored" })
+				await updateTask(task._id, { status: "errored" })
 			}
 		}
 	}

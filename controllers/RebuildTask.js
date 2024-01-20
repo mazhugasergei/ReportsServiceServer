@@ -6,15 +6,15 @@ export default function ({ tasksManager }) {
 		errors: {},
 
 		reqSchema: ({ string, object, array, number, any }, {}) => ({
-			name: string(/.{1,100}/),
-			link: string(/.{1,100}/).optional(),
-			type: string(/.{1,100}/).optional()
+			_id: string(/.{1,100}/),
+			link: string(/.{1,100}/)
 		}),
 
 		resSchema: ({ string, object, array, number, any }, {}) => ({}),
 
 		controller: async function ({ body, auth, req, res }) {
-			await tasksManager.addTask(body)
+			const { _id, link } = body
+			await tasksManager.updateTask(_id, { status: "waiting", link })
 		}
 	}
 }

@@ -11,26 +11,26 @@ function Test({ SourcesManager, db }) {
 	})
 
 	it("Создать ресурс", async () => {
-		const id = await sourcesManager.createSource({ name: "testName" })
-		const sources = (await sourcesManager.getSources()).filter(({ _id }) => _id === id)
+		const _id = await sourcesManager.createSource({ name: "testName" })
+		const sources = (await sourcesManager.getSources()).filter((source) => source._id === _id)
 		expect(sources.length).to.equal(1)
 		expect(sources[0].name).to.equal("testName")
-		await sourcesManager.deleteSource(id)
+		await db("sources").deleteOne({ _id })
 	})
 
 	it("Редактировать ресурс", async () => {
-		const id = await sourcesManager.createSource({ name: "testNameeeeeeeee" })
-		await sourcesManager.updateSource(id, { name: "testName" })
-		const sources = (await sourcesManager.getSources()).filter(({ _id }) => _id === id)
+		const _id = await sourcesManager.createSource({ name: "testNameeeeeeeee" })
+		await sourcesManager.updateSource(_id, { name: "testName" })
+		const sources = (await sourcesManager.getSources()).filter((source) => source._id === _id)
 		expect(sources.length).to.equal(1)
 		expect(sources[0].name).to.equal("testName")
-		await sourcesManager.deleteSource(id)
+		await db("sources").deleteOne({ _id })
 	})
 
 	it("Удалить ресурс", async () => {
-		const id = await sourcesManager.createSource({ name: "testName" })
-		await sourcesManager.deleteSource(id)
-		const sources = (await sourcesManager.getSources()).filter(({ _id }) => _id === id)
+		const _id = await sourcesManager.createSource({ name: "testName" })
+		await sourcesManager.deleteSource(_id)
+		const sources = (await sourcesManager.getSources()).filter((source) => source._id === _id)
 		expect(sources.length).to.equal(0)
 	})
 }

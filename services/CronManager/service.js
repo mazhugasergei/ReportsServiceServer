@@ -10,7 +10,7 @@ export default function Manager({ tasksManager }) {
 
 	function addJob({ sourceId, name, link, cron }) {
 		jobs[sourceId] = Cron.schedule(cron, async () => {
-			await tasksManager.addTask({ name, type: "createReport", sourceId, link })
+			await tasksManager.addTask({ name, type: "createReport", link })
 		})
 	}
 
