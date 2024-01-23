@@ -14,11 +14,16 @@ export default horizen.init(async function (props, options) {
 	const tasksManager = new localServices.TasksManager({ reportsManager, ...props })
 	const cronManager = new localServices.CronManager({ tasksManager, ...props })
 
-	// daemonsManager.addDaemon({ name: "execActiveTasks", daemon: tasksManager.execActiveTasks })
+	;(await sourcesManager.getSources()).forEach((source) => {
+		const { _id, name, link, cron } = source
+		cronManager.addJob({ sourceId: _id, name, link, cron })
+	})
 
-	// cron.schedule("59 23 * * *", () => {
-	// 	process.exit(-1)
-	// })
+	daemonsManager.addDaemon({ name: "execActiveTasks", daemon: tasksManager.execActiveTasks })
+
+	cron.schedule("59 23 * * *", () => {
+		process.exit(-1)
+	})
 
 	return {
 		port: config.horizen.ports.server,
